@@ -51,7 +51,6 @@ func checkForCompromisedPassword(suffixResponse string, pwSuffix string) error {
 func retrieveMatchingCompromisedPasswords(pwPrefix string) (err error, suffixResponse string) {
   url := "https://api.pwnedpasswords.com/range/" + pwPrefix
   method := "GET"
-
   client := &http.Client{}
   req, err := http.NewRequest(method, url, nil)
   req.Header.Add("Add-Padding", "true")
@@ -64,7 +63,6 @@ func retrieveMatchingCompromisedPasswords(pwPrefix string) (err error, suffixRes
     return
   }
   defer res.Body.Close()
-
   b, err := ioutil.ReadAll(res.Body)
   if err != nil {
     return
@@ -77,10 +75,7 @@ func hashPassword(pw string) (string, string) {
   h := sha1.New()
   h.Write([]byte(pw))
   bs := h.Sum(nil)
-
   hashPw := fmt.Sprintf("%x", bs)
-  pwPrefix := hashPw[:5]
-  pwSuffix := strings.ToUpper(hashPw[5:])
-  return pwPrefix, pwSuffix
+  return hashPw[:5], strings.ToUpper(hashPw[5:])
 }
 
