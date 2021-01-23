@@ -8,6 +8,7 @@ https://haveibeenpwned.com/API/v3#SearchingPwnedPasswordsByRange
 https://www.troyhunt.com/enhancing-pwned-passwords-privacy-with-padding/
 
 <h3>Usage:</h3>
+
 ```
 ->go get github.com/kmcrawford/password-checker
 
