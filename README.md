@@ -5,9 +5,11 @@ This is an example program that uses https://haveibeenpwned.com/Passwords api to
 Range api used (with padding):
 https://haveibeenpwned.com/API/v3#SearchingPwnedPasswordsByRange
 
+Blog Post on api and how it is secure to use:
 https://www.troyhunt.com/enhancing-pwned-passwords-privacy-with-padding/
 
 <h3>Usage:</h3>
+
 ```
 ->go get github.com/kmcrawford/password-checker
 
