@@ -12,6 +12,11 @@ import (
 )
 
 func main() {
+  if len(os.Args) == 1 {
+    fmt.Println("Usage: password-checker <password-to-check>")
+    os.Exit(2)
+  }
+
   pw := os.Args[1]
 
   pwPrefix, pwSuffix := hashPassword(pw)
