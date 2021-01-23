@@ -8,6 +8,7 @@ import (
   "io/ioutil"
   "net/http"
   "os"
+  "strconv"
   "strings"
 )
 
@@ -21,11 +22,11 @@ func main() {
 
   pwPrefix, pwSuffix := hashPassword(pw)
 
-  err, suffixResponse := retrieveMatchingCompromisedPasswords(pwPrefix)
+  err, hashedSuffixes := retrievePasswordHashesFromApi(pwPrefix)
   if err != nil {
     panic(err)
   }
-  err = checkForCompromisedPassword(suffixResponse, pwSuffix)
+  err, _ = checkForCompromisedPassword(hashedSuffixes, pwSuffix)
   if err != nil {
     fmt.Println(err)
     os.Exit(1)
@@ -33,7 +34,7 @@ func main() {
   fmt.Println("Password not found to be compromised")
 }
 
-func checkForCompromisedPassword(suffixResponse string, pwSuffix string) error {
+func checkForCompromisedPassword(suffixResponse string, pwSuffix string) (error, int) {
   scanner := bufio.NewScanner(strings.NewReader(suffixResponse))
   for scanner.Scan() {
     i := scanner.Text()
@@ -42,13 +43,14 @@ func checkForCompromisedPassword(suffixResponse string, pwSuffix string) error {
       continue
     }
     if d[0] == pwSuffix {
-      return errors.New("Appeared "+ d[1]+ " times in security breaches")
+      compromiseCount, _ := strconv.Atoi(d[1])
+      return errors.New("Appeared "+ d[1]+ " times in security breaches"), compromiseCount
     }
   }
-  return nil
+  return nil, 0
 }
 
-func retrieveMatchingCompromisedPasswords(pwPrefix string) (err error, suffixResponse string) {
+func retrievePasswordHashesFromApi(pwPrefix string) (err error, hashedSuffixes string) {
   url := "https://api.pwnedpasswords.com/range/" + pwPrefix
   method := "GET"
   client := &http.Client{}
@@ -67,7 +69,7 @@ func retrieveMatchingCompromisedPasswords(pwPrefix string) (err error, suffixRes
   if err != nil {
     return
   }
-  suffixResponse = string(b)
+  hashedSuffixes = string(b)
   return
 }
 
